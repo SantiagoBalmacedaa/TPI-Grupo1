@@ -15,12 +15,14 @@ def juego_Esquivar():
 
 def menu_principal():
     while True:
-        print("\nMenú de Juegos:")
-        print("1. Piedra, Papel o Tijera")
-        print("2. Frío, Tibio, Caliente")
-        print("3. Juego de la Serpiente")
-        print("4. Juedo de Esquivar")
+        print("****************************")
+        print("Menú de Juegos:")
+        print("1. Piedra, Papel o Tijera📋")
+        print("2. Frío, Tibio, Caliente🥶")
+        print("3. Juego de la Serpiente🐍")
+        print("4. Juedo de Esquivar🔴")
         print("5. Salir")
+        print("****************************")
 
         opcion = input("Selecciona una opción: ")
 
