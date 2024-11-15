@@ -43,3 +43,5 @@ while juego:
 #Mostrar el resultado final
 print("Juego terminado")
 print(f"Puntaje FINAL | Jugador 1: {puntaje1}, Jugador 2: {puntaje2}")
+with open("persona.txt", "a", newline="") as file :
+    file.write(f"Puntaje FINAL | Jugador 1: {puntaje1}, Jugador 2: {puntaje2}\n")
