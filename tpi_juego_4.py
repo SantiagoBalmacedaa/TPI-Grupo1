@@ -17,7 +17,7 @@ NEGRO = (0, 0, 0)
 
 pygame.init()
 pantalla = pygame.display.set_mode((ANCHO, ALTO))
-pygame.display.set_caption("Juego Básico con Pygame")
+pygame.display.set_caption("TPI Juego 4")
 reloj = pygame.time.Clock()
 
 fuente = pygame.font.SysFont("Courier New", 24)
@@ -40,8 +40,11 @@ def dibujar_fin_juego(puntaje):
     pantalla.blit(texto_fin_juego, (ANCHO // 2 - texto_fin_juego.get_width() // 2, ALTO // 2 - 50))
     pantalla.blit(texto_puntaje, (ANCHO // 2 - texto_puntaje.get_width() // 2, ALTO // 2))
 
-def principal():
+def juego_Esquivar():
     global pos_x_jugador, pos_y_jugador
+
+    pos_x_jugador, pos_y_jugador = ANCHO // 2, ALTO - alto_jugador - 20
+    objetos_cayendo.clear()  # Reiniciar los objetos cayendo para un nuevo juego
 
     corriendo = True
     puntaje = 0
@@ -53,7 +56,7 @@ def principal():
         dibujar_jugador(pos_x_jugador, pos_y_jugador)
 
         if not fin_juego:
-            if random.randint(1, 30) == 1:
+            if random.randint(1, 6) == 1:
                 objetos_cayendo.append(generar_objeto_caido())
 
             for objeto in objetos_cayendo:
@@ -86,5 +89,6 @@ def principal():
         pygame.display.flip()
         reloj.tick(FPS)
 
+# Esta condición asegura que el juego no se ejecute automáticamente al ser importado.
 if __name__ == "__main__":
-    principal()
+    juego_Esquivar()
