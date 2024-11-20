@@ -4,58 +4,53 @@ import random
 ANCHO, ALTO = 800, 600
 FPS = 60
 ancho_jugador, alto_jugador = 40, 40
-pos_x_jugador, pos_y_jugador = ANCHO // 2, ALTO - alto_jugador - 20
 color_jugador = (128, 0, 128)
-
 radio_objeto = 15
 velocidad_objeto = 5
-objetos_cayendo = []
-
 BLANCO = (255, 255, 255)
 ROJO = (255, 0, 0)
 NEGRO = (0, 0, 0)
 
-pygame.init()
-pantalla = pygame.display.set_mode((ANCHO, ALTO))
-pygame.display.set_caption("TPI Juego 4")
-reloj = pygame.time.Clock()
-
-fuente = pygame.font.SysFont("Courier New", 24)
-fuente_grande = pygame.font.SysFont("Courier New", 36)
-
-def dibujar_jugador(x, y):
-    pygame.draw.rect(pantalla, color_jugador, (x, y, ancho_jugador, alto_jugador))
-
-def generar_objeto_caido():
-    x = random.randint(0, ANCHO - radio_objeto * 2)
-    return {'x': x, 'y': 0}
-
-def dibujar_puntaje(puntaje):
-    texto_puntaje = fuente.render(f"Puntaje: {puntaje}", True, BLANCO)
-    pantalla.blit(texto_puntaje, (10, 10))
-
-def dibujar_fin_juego(puntaje):
-    texto_fin_juego = fuente_grande.render("¡Has perdido!", True, ROJO)
-    texto_puntaje = fuente.render(f"Puntaje: {puntaje}", True, BLANCO)
-    pantalla.blit(texto_fin_juego, (ANCHO // 2 - texto_fin_juego.get_width() // 2, ALTO // 2 - 50))
-    pantalla.blit(texto_puntaje, (ANCHO // 2 - texto_puntaje.get_width() // 2, ALTO // 2))
-
 def juego_Esquivar():
-    global pos_x_jugador, pos_y_jugador
+    pygame.init()
+    pantalla = pygame.display.set_mode((ANCHO, ALTO))
+    pygame.display.set_caption("TPI Juego 4")
+    reloj = pygame.time.Clock()
+    fuente = pygame.font.SysFont("Courier New", 24)
+    fuente_grande = pygame.font.SysFont("Courier New", 36)
 
-    pos_x_jugador, pos_y_jugador = ANCHO // 2, ALTO - alto_jugador - 20
-    objetos_cayendo.clear()  # Reiniciar los objetos cayendo para un nuevo juego
+    import os
+    os.environ['SDL_VIDEO_WINDOW_POS'] = "0,0"
+    pantalla = pygame.display.set_mode((ANCHO, ALTO), pygame.NOFRAME)
+
+    def dibujar_jugador(x, y):
+        pygame.draw.rect(pantalla, color_jugador, (x, y, ancho_jugador, alto_jugador))
+
+    def generar_objeto_caido():
+        x = random.randint(0, ANCHO - radio_objeto * 2)
+        return {'x': x, 'y': 0}
+
+    def dibujar_puntaje(puntaje):
+        texto_puntaje = fuente.render(f"Puntaje: {puntaje}", True, BLANCO)
+        pantalla.blit(texto_puntaje, (10, 10))
+
+    def dibujar_fin_juego(puntaje):
+        texto_fin_juego = fuente_grande.render("¡Has perdido!", True, ROJO)
+        texto_puntaje = fuente.render(f"Puntaje: {puntaje}", True, BLANCO)
+        pantalla.blit(texto_fin_juego, (ANCHO // 2 - texto_fin_juego.get_width() // 2, ALTO // 2 - 50))
+        pantalla.blit(texto_puntaje, (ANCHO // 2 - texto_puntaje.get_width() // 2, ALTO // 2))
+
+    def reiniciar_juego():
+        return ANCHO // 2, ALTO - alto_jugador - 20, [], 0, False
 
     corriendo = True
-    puntaje = 0
-    fin_juego = False
-
     while corriendo:
-        pantalla.fill(NEGRO)
+        pos_x_jugador, pos_y_jugador, objetos_cayendo, puntaje, fin_juego = reiniciar_juego()
 
-        dibujar_jugador(pos_x_jugador, pos_y_jugador)
+        while corriendo and not fin_juego:
+            pantalla.fill(NEGRO)
+            dibujar_jugador(pos_x_jugador, pos_y_jugador)
 
-        if not fin_juego:
             if random.randint(1, 6) == 1:
                 objetos_cayendo.append(generar_objeto_caido())
 
@@ -71,24 +66,26 @@ def juego_Esquivar():
                         fin_juego = True
 
             dibujar_puntaje(puntaje)
+            pygame.display.flip()
 
-        else:
-            dibujar_fin_juego(puntaje)
+            for evento in pygame.event.get():
+                if evento.type == pygame.QUIT:
+                    corriendo = False
 
-        for evento in pygame.event.get():
-            if evento.type == pygame.QUIT:
-                corriendo = False
-
-        if not fin_juego:
             teclas = pygame.key.get_pressed()
             if teclas[pygame.K_LEFT] and pos_x_jugador > 0:
                 pos_x_jugador -= 5
             if teclas[pygame.K_RIGHT] and pos_x_jugador < ANCHO - ancho_jugador:
                 pos_x_jugador += 5
 
-        pygame.display.flip()
-        reloj.tick(FPS)
+            reloj.tick(FPS)
 
-# Esta condición asegura que el juego no se ejecute automáticamente al ser importado.
+        if fin_juego:
+            dibujar_fin_juego(puntaje)
+            pygame.display.flip()
+            pygame.time.wait(2000)  
+
+    pygame.quit()
+
 if __name__ == "__main__":
     juego_Esquivar()

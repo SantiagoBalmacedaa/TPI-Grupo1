@@ -1,28 +1,23 @@
 
 def piedra_papel_tijera():
-    # Inicialización de variables
     jugador1 = ""
     jugador2 = ""
     puntaje1 = 0
     puntaje2 = 0
 
-    juego = True  # La condición del bucle es que ambos jugadores no ingresen -1
+    juego = True  
 
-    # Bucle principal del juego
     while juego:
-        # Solicitar la opción elegida del jugador 1
         jugador1 = input("Jugador 1, elige piedra, papel o tijera (o ingresa -1 para finalizar): ").lower()
         if jugador1 == "-1":
             juego = False
-            break  # Salir del bucle si el jugador 1 ingresa -1
+            break  
 
-        # Solicitar la opción elegida del jugador 2
         jugador2 = input("Jugador 2, elige piedra, papel o tijera (o ingresa -1 para salir): ").lower()
         if jugador2 == "-1":
             juego = False
-            break  # Salir del bucle si el jugador 2 ingresa -1
+            break  
 
-        # Determinar el ganador
         if jugador1 == jugador2:
             print("Es un empate")
         elif (jugador1 == "piedra" and jugador2 == "tijera") or              (jugador1 == "tijera" and jugador2 == "papel") or              (jugador1 == "papel" and jugador2 == "piedra"):
@@ -34,10 +29,8 @@ def piedra_papel_tijera():
         else:
             print("Por favor, elige piedra, papel o tijera")
 
-        # Mostrar los puntos actuales
         print(f"Puntaje ACTUAL | Jugador 1: {puntaje1}, Jugador 2: {puntaje2}")
 
-    # Mostrar el resultado final
     print("Juego terminado")
     print(f"Puntaje FINAL | Jugador 1: {puntaje1}, Jugador 2: {puntaje2}")
     with open("persona.txt", "a", newline="") as file:
