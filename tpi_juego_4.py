@@ -1,9 +1,35 @@
 import pygame
 import random
+import os
+
+preguntas = {
+    1: {
+        "pregunta": "En Argentina se halla la montaña más alta del continente americano ¿cuál es esa montaña y dónde se localiza?",
+    "opciones": {"a": " El volcán Llullaillaco, en la Provincia de Salta.", "b": "El nevado Tres Cruces, en la Provincia de Catamarca.", "c": "El cerro Aconcagua, en la Provincia de Mendoza.", "d": "El cerro Ramada, en la Provincia de San Juan."},
+        "respuesta": "c"
+    },
+    2: {
+        "pregunta": "¿Cuál es la capital de Argentina?",
+        "opciones": {"a": "Córdoba", "b": "Buenos Aires", "c": "Rosario"},
+        "respuesta": "b"
+    },
+    3: {
+        "pregunta": "¿Qué animal es típico de la región de la Patagonia?",
+        "opciones": {"a": "El pingüino", "b": "El yaguareté", "c": "El puma"},
+        "respuesta": "a"
+    },
+    4: {
+        "pregunta": "¿Qué fecha se celebra el Día de la Independencia en Argentina?",
+        "opciones": {"a": "9 de julio", "b": "25 de mayo", "c": "20 de junio"},
+        "respuesta":"a"    
+    }, 
+}
+
 
 ANCHO, ALTO = 800, 600
 FPS = 60
 ancho_jugador, alto_jugador = 40, 40
+
 color_jugador = (128, 0, 128)
 radio_objeto = 15
 velocidad_objeto = 5
@@ -19,7 +45,6 @@ def juego_Esquivar():
     fuente = pygame.font.SysFont("Courier New", 24)
     fuente_grande = pygame.font.SysFont("Courier New", 36)
 
-    import os
     os.environ['SDL_VIDEO_WINDOW_POS'] = "0,0"
     pantalla = pygame.display.set_mode((ANCHO, ALTO), pygame.NOFRAME)
 
@@ -51,7 +76,7 @@ def juego_Esquivar():
             pantalla.fill(NEGRO)
             dibujar_jugador(pos_x_jugador, pos_y_jugador)
 
-            if random.randint(1, 6) == 1:
+            if random.randint(1, 7) == 1:
                 objetos_cayendo.append(generar_objeto_caido())
 
             for objeto in objetos_cayendo:
