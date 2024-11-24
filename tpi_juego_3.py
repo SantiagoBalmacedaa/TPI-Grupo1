@@ -76,11 +76,11 @@ def mov():
         x = cabeza.xcor()
         cabeza.setx(x + 20)
 
-# Cambiar el color del bonus constantemente
+# Bonus multicolor
 def cambiar_color_bonus():
     if bonus.isvisible():
         bonus.color(random.choice(colores))
-        wn.ontimer(cambiar_color_bonus, 200)  # Cambia el color cada 200 milisegundos
+        wn.ontimer(cambiar_color_bonus, 200) 
 
 # Mostrar el bonus especial
 def mostrar_bonus():
@@ -89,8 +89,8 @@ def mostrar_bonus():
         y = random.randint(-250, 250)
         bonus.goto(x, y)
         bonus.showturtle()
-        cambiar_color_bonus()  # Inicia el cambio de colores
-        wn.ontimer(bonus.hideturtle, 5000)  # El bonus desaparece en 5 segundos
+        cambiar_color_bonus() 
+        wn.ontimer(bonus.hideturtle, 5000) 
 
 wn.listen()
 wn.onkeypress(arriba, "Up")
