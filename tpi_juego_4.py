@@ -1,3 +1,4 @@
+#FALTA HACER: TRATAR DE QUE CUANDO PONGAS REINTENTAR SE PUEDAN RESPONDER LAS PREGUNTAS HECHAS EN EL DICCIONARIO, CARTELES YA HECHOS TRATAR DE MODIFICAR EL CARTEL DE REINTENTAR PARA QUE SE VEA MEJOR
 import pygame
 import random
 import os
@@ -33,9 +34,11 @@ ancho_jugador, alto_jugador = 40, 40
 color_jugador = (128, 0, 128)
 radio_objeto = 15
 velocidad_objeto = 5
+
 BLANCO = (255, 255, 255)
 ROJO = (255, 0, 0)
 NEGRO = (0, 0, 0)
+GRIS_CLARO = (200, 200, 200)
 
 def juego_Esquivar():
     pygame.init()
@@ -61,9 +64,23 @@ def juego_Esquivar():
 
     def dibujar_fin_juego(puntaje):
         texto_fin_juego = fuente_grande.render("¡Has perdido!", True, ROJO)
+        pantalla.blit(texto_fin_juego, (ANCHO // 2 - texto_fin_juego.get_width() // 2, ALTO // 2 - 100))
         texto_puntaje = fuente.render(f"Puntaje: {puntaje}", True, BLANCO)
-        pantalla.blit(texto_fin_juego, (ANCHO // 2 - texto_fin_juego.get_width() // 2, ALTO // 2 - 50))
-        pantalla.blit(texto_puntaje, (ANCHO // 2 - texto_puntaje.get_width() // 2, ALTO // 2))
+        pantalla.blit(texto_puntaje, (ANCHO // 2 - texto_puntaje.get_width() // 2, ALTO // 2 - 50))
+
+        
+        boton_reintentar = pygame.Rect(ANCHO // 2 - 150, ALTO // 2, 120, 50)
+        boton_salir = pygame.Rect(ANCHO // 2 + 30, ALTO // 2, 120, 50)
+        
+        pygame.draw.rect(pantalla, GRIS_CLARO, boton_reintentar)
+        pygame.draw.rect(pantalla, GRIS_CLARO, boton_salir)
+
+        texto_reintentar = fuente.render("Reintentar", True, NEGRO)
+        texto_salir = fuente.render("Salir", True, NEGRO)
+        pantalla.blit(texto_reintentar, (boton_reintentar.x + 0, boton_reintentar.y + 8))
+        pantalla.blit(texto_salir, (boton_salir.x + 30, boton_salir.y + 10))
+        
+        return boton_reintentar, boton_salir
 
     def reiniciar_juego():
         return ANCHO // 2, ALTO - alto_jugador - 20, [], 0, False
@@ -106,9 +123,22 @@ def juego_Esquivar():
             reloj.tick(FPS)
 
         if fin_juego:
-            dibujar_fin_juego(puntaje)
+            pantalla.fill(NEGRO)
+            boton_reintentar, boton_salir = dibujar_fin_juego(puntaje)
             pygame.display.flip()
-            pygame.time.wait(2000)  
+            
+            esperando = True
+            while esperando:
+                for evento in pygame.event.get():
+                    if evento.type == pygame.QUIT:
+                        corriendo = False
+                        esperando = False
+                    elif evento.type == pygame.MOUSEBUTTONDOWN and evento.button == 1:
+                        if boton_reintentar.collidepoint(evento.pos):
+                            esperando = False 
+                        elif boton_salir.collidepoint(evento.pos):
+                            corriendo = False
+                            esperando = False
 
     pygame.quit()
 
