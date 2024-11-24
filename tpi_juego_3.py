@@ -32,6 +32,14 @@ comida.color("red")
 comida.penup()
 comida.goto(0, 100)
 
+# Bonus especial
+bonus = turtle.Turtle()
+bonus.speed(0)
+bonus.shape("turtle")  
+bonus.color("gold")
+bonus.penup()
+bonus.hideturtle() 
+
 segmentos = []
 
 texto = turtle.Turtle()
@@ -67,6 +75,22 @@ def mov():
     if cabeza.direction == "right":
         x = cabeza.xcor()
         cabeza.setx(x + 20)
+
+# Cambiar el color del bonus constantemente
+def cambiar_color_bonus():
+    if bonus.isvisible():
+        bonus.color(random.choice(colores))
+        wn.ontimer(cambiar_color_bonus, 200)  # Cambia el color cada 200 milisegundos
+
+# Mostrar el bonus especial
+def mostrar_bonus():
+    if not bonus.isvisible():
+        x = random.randint(-250, 250)
+        y = random.randint(-250, 250)
+        bonus.goto(x, y)
+        bonus.showturtle()
+        cambiar_color_bonus()  # Inicia el cambio de colores
+        wn.ontimer(bonus.hideturtle, 5000)  # El bonus desaparece en 5 segundos
 
 wn.listen()
 wn.onkeypress(arriba, "Up")
@@ -119,6 +143,17 @@ while True:
         texto.clear()
         texto.write("Score: {}      High Score: {}".format(score, high_score), align="center", font=("Courier", 24, "normal"))
 
+    # Colisión con el bonus
+    if bonus.isvisible() and cabeza.distance(bonus) < 20:
+        score += 50  # puntos
+        bonus.hideturtle()
+
+        if score > high_score:
+            high_score = score
+
+        texto.clear()
+        texto.write("Score: {}      High Score: {}".format(score, high_score), align="center", font=("Courier", 24, "normal"))
+
     totalSeg = len(segmentos)
     for index in range(totalSeg - 1, 0, -1):
         x = segmentos[index - 1].xcor()
@@ -146,5 +181,9 @@ while True:
             score = 0
             texto.clear()
             texto.write("Score: {}      High Score: {}".format(score, high_score), align="center", font=("Courier", 24, "normal"))
+
+    # Mostrar el bonus con probabilidad baja
+    if random.randint(1, 100) == 1: 
+        mostrar_bonus()
 
     time.sleep(posponer)
