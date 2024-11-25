@@ -1,6 +1,7 @@
 import turtle
 import time
 import random
+import sys
 
 posponer = 0.1
 
@@ -50,6 +51,25 @@ texto.hideturtle()
 texto.goto(0, 260)
 texto.write("Score: 0       High Score: 0", align="center", font=("Courier", 24, "normal"))
 
+pregunta_texto = turtle.Turtle()
+pregunta_texto.speed(0)
+pregunta_texto.color("white")
+pregunta_texto.penup()
+pregunta_texto.hideturtle()
+pregunta_texto.goto(0, 50)
+
+# Lista de preguntas
+preguntas = [
+    {"pregunta": "¿Cuántos lados tiene un triángulo?", "opciones": ["A) 2", "B) 3", "C) 4"], "respuesta": "B"},
+    {"pregunta": "¿Qué forma tiene una pelota?", "opciones": ["A) Cuadrada", "B) Triangular", "C) Circular"], "respuesta": "C"},
+    {"pregunta": "¿Qué figura parece un queso de pizza cortado?", "opciones": ["A) Círculo", "B) Cuadrado", "C) Triángulo"], "respuesta": "C"},
+    {"pregunta": "¿Qué forma tiene una moneda?", "opciones": ["A) Triangular", "B) Circular", "C) Cuadrada"], "respuesta": "B"},
+    {"pregunta": "¿Cuántas esquinas tiene un rectángulo?", "opciones": ["A) 4", "B) 2", "C) 3"], "respuesta": "A"},
+    {"pregunta": "¿Todas las caras de un cubo son iguales?", "opciones": ["A) Sí", "B) No"], "respuesta": "A"},
+]
+
+movimiento_habilitado = True
+
 def arriba():
     cabeza.direction = "up"
 def abajo():
@@ -92,6 +112,43 @@ def mostrar_bonus():
         cambiar_color_bonus() 
         wn.ontimer(bonus.hideturtle, 5000) 
 
+# Función para mostrar pregunta
+def mostrar_pregunta():
+    global movimiento_habilitado
+    movimiento_habilitado = False 
+
+    pregunta = random.choice(preguntas)
+    pregunta_texto.clear()
+    opciones = "\n".join(pregunta["opciones"])
+    pregunta_texto.write(f"{pregunta['pregunta']}\n{opciones}\nPresiona A, B o C para responder", 
+                         align="center", font=("Courier", 16, "normal"))
+
+    respuesta_correcta = pregunta["respuesta"]
+
+    def verificar_respuesta(tecla):
+        global movimiento_habilitado
+        if tecla == respuesta_correcta:
+            pregunta_texto.clear()
+            pregunta_texto.write("¡Correcto!", align="center", font=("Courier", 16, "normal"))
+            wn.update()
+            time.sleep(1) 
+            pregunta_texto.clear()
+            movimiento_habilitado = True 
+            texto.clear()
+            texto.goto(0, 260) 
+            texto.write("Score: {}      High Score: {}".format(score, high_score), align="center", font=("Courier", 24, "normal"))
+        else:
+            pregunta_texto.clear()
+            pregunta_texto.write("Lo siento, es Incorrecto...\nCerrando el juego...", align="center", font=("Courier", 16, "normal"))
+            wn.update()
+            time.sleep(2)  
+            wn.bye()  # Cierra la ventana automáticamente
+            sys.exit()  # Termina el programa
+
+    wn.onkeypress(lambda: verificar_respuesta("A"), "a")
+    wn.onkeypress(lambda: verificar_respuesta("B"), "b")
+    wn.onkeypress(lambda: verificar_respuesta("C"), "c")
+
 wn.listen()
 wn.onkeypress(arriba, "Up")
 wn.onkeypress(abajo, "Down")
@@ -114,6 +171,8 @@ while True:
         score = 0
         texto.clear()
         texto.write("Score: {}      High Score: {}".format(score, high_score), align="center", font=("Courier", 24, "normal"))
+        
+        mostrar_pregunta()  # Muestra pregunta cuando pierdes
 
     if cabeza.distance(comida) < 20:
         # Guardar el color y formas
@@ -181,6 +240,8 @@ while True:
             score = 0
             texto.clear()
             texto.write("Score: {}      High Score: {}".format(score, high_score), align="center", font=("Courier", 24, "normal"))
+            
+            mostrar_pregunta()  # Muestra pregunta cuando colisionas con tu cuerpo
 
     # Mostrar el bonus con probabilidad baja
     if random.randint(1, 100) == 1: 
